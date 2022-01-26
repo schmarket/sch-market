@@ -20,9 +20,10 @@ export default function Search({ categories, auction }) {
             { auction.status === AuctionStatus.LIVE && (
                 <div>
                     <p><b>Time left:</b> <Countdown date={auction.endsAt} /> <b>|</b> { endsAt }</p>
-                    <h3 className="font-medium text-3xl mt-8 mb-4">Current Bid:</h3> 
+                    <h3 className="font-medium text-3xl mt-8 mb-4">Current Bid:</h3>
                     <p className="text-2xl">
-                        <b className="font-medium">${auction.bids[0].amount}</b> ({auction._count.bids} bids)
+                    {auction.bids.length && (<span>
+                        <b className="font-medium">${auction.bids[0].amount}</b> ({auction._count.bids} bids)</span>)}
                         <Link href={"/bid/" + auction.id} key={ "bid_" + auction.id }>
                         <a className="px-3 py-2 rounded bg-green-600 hover:bg-green-800 transition-colors ml-16">Place Your Bid</a>
                         </Link>
