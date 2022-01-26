@@ -10,6 +10,34 @@ import Layout from '../../components/layout'
 import Sidebar from '../../components/sidebar'
 
 export default function Search({ categories, auction }) {
+    // const [state, setState] = useState({ userMessage: null });
+
+    async function winWithInstantPrice(event) {
+        event.preventDefault()
+
+        // setState({ errorMessage: null });
+
+        const res = await fetch('/api/win', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                auctionId: auction.id,
+            }),
+        })
+
+        const json = await res.json()
+
+        if (json.status === 'success') {
+            window.location.href = `/auction/${ auction.id }`
+        } else {
+            // setState({ errorMessage: json.error.message });
+        }
+
+        return false;
+    }
+
     const endsAt = dayjs(auction.endsAt).format('D MMMM YYYY HH:mm')
 
     return (
@@ -28,6 +56,20 @@ export default function Search({ categories, auction }) {
                         <a className="px-3 py-2 rounded bg-green-600 hover:bg-green-800 transition-colors ml-16">Place Your Bid</a>
                         </Link>
                     </p>
+                    {auction.instantPrice > 0 && <div>
+                        <h3 className="font-medium text-3xl mt-8 mb-4">Instant Price:</h3>
+                        <p className="text-2xl">
+                            <b className="font-medium">${auction.instantPrice}</b>
+                            <Link href={"/api/win/" + auction.id} key={ "win_" + auction.id }>
+                                <button className="px-3 py-2 rounded bg-green-600 hover:bg-green-800 transition-colors ml-16" onClick={winWithInstantPrice}>Win at Instant Price</button>
+                            </Link>
+                        </p>
+                    </div>}
+                    {/* {state.errorMessage && <div className="text-white px-6 py-4 border-0 rounded relative mb-4 bg-red-500">
+                        <span className="inline-block align-middle mr-8">
+                            { state.errorMessage }
+                        </span>
+                    </div>} */}
                 </div>
             )}
             { auction.status === AuctionStatus.ENDED && (
@@ -75,7 +117,7 @@ export const getServerSideProps = async (context) => {
                         amount: true,
                     },
                     orderBy: {
-                        amount: 'asc'
+                        amount: 'desc'
                     },
                     take: 1,
                 },

@@ -17,28 +17,28 @@ export default async function handler(req, res) {
 		return
 	}
 
-	const { auctionId, workerId } = req.body
-	const amount = parseInt(req.body.amount)
+	const { auctionId } = req.body
 	const username = userCookie
 
 	try {
-		const bid = await prisma.$transaction(async _ => {
-			const [lowerBid, auction, user] = await prisma.$transaction([
+		const [bid, auction] = await prisma.$transaction(async _ => {
+			const [currentWinningBid, auction, user] = await prisma.$transaction([
 				prisma.bid.findFirst({
 					select: {
 						amount: true,
 					},
 					where: {
 						auctionId: auctionId,
-						amount: {
-							gte: amount
-						}
+					},
+					orderBy: {
+						amount: 'desc',
 					}
 				}),
 				prisma.auction.findUnique({
 					select: {
 						status: true,
 						maxPrice: true,
+						instantPrice: true,
 					},
 					where: {
 						id: auctionId
@@ -67,21 +67,37 @@ export default async function handler(req, res) {
 				throw new Error(`Can't bid on auction with status ${ auction.status }`)
 			}
 
-			if (auction.maxPrice > amount) {
-				throw new Error(`Bid $${ amount } can't be below max price of $${ auction.maxPrice }`)
+			if (auction.instantPrice === null) {
+				throw new Error(`This auction does not have an Instant Price set`)
 			}
 
-			if (lowerBid) {
-				throw new Error(`Lower or equal bid of \$${ lowerBid.amount } is found`)
+			// if (auction.maxPrice > amount) {
+			// 	throw new Error(`Bid $${ amount } can't be below max price of $${ auction.maxPrice }`)
+			// }
+
+			// throw new Error(` ${ JSON.stringify(currentWinningBid) } ${ JSON.stringify(auction.instantPrice) } `)
+
+			if (currentWinningBid && currentWinningBid.amount > auction.instantPrice) {
+				throw new Error(`There is a higher bid than Instant Price available`)
 			}
 
-			return prisma.bid.create({
-				data: {
-					amount: amount,
-					auctionId: auctionId,
-					workerId: user.worker.id,
-				}
-			})
+			return prisma.$transaction([
+				prisma.bid.create({
+					data: {
+						amount: auction.instantPrice,
+						auctionId: auctionId,
+						workerId: user.worker.id,
+					},
+				}),
+				prisma.auction.update({
+					data: {
+						status: AuctionStatus.ENDED
+					},
+					where: {
+						id: auctionId
+					}
+				})
+			])
 		})
 
 		res.status(201).json({

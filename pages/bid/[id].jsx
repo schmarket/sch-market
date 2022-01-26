@@ -45,7 +45,7 @@ export default function Bid({ auction }) {
                 </div>}
                 <form onSubmit={submit}>
                     <label  className="block mb-6">
-                        <span  className="text-gray-700">New Bid Amount (less than ${ auction.bids.length ? auction.bids[0].amount : auction.maxPrice })</span>
+                        <span  className="text-gray-700">New Bid Amount (more than ${ auction.bids.length ? auction.bids[0].amount : auction.maxPrice })</span>
                         <input type="text" name="amount"  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Bid Amount" required />
                     </label>
 
@@ -85,7 +85,7 @@ export const getServerSideProps = async (context) => {
                     amount: true,
                 },
                 orderBy: {
-                    amount: 'asc'
+                    amount: 'desc'
                 },
                 take: 1,
             },

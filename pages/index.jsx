@@ -45,7 +45,7 @@ export const getServerSideProps = async () => {
 						amount: true,
 					},
 					orderBy: {
-						amount: 'asc'
+						amount: 'desc'
 					},
 					take: 1,
 				},
@@ -82,7 +82,7 @@ export const getServerSideProps = async () => {
 						amount: true,
 					},
 					orderBy: {
-						amount: 'asc'
+						amount: 'desc'
 					},
 					take: 1,
 				},
