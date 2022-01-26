@@ -37,21 +37,21 @@ After creating the DB schema and seeding it, I have used Express.js to prototype
 
 ### Frontend Application
 
-Once I had most queries in place, I've moved on to building out the frontend. Due to the nature of how my Express.js prototype returns data, it did not fit as a proper API backend, since it would require a lot more tuning and splitting. Instead I have opted to use `PrismaClient` directly from `Next.js` "pages". This is not how I would approach an application if I were to have more time to properly architect it, however it seemed sufficient to begin forming the look of the site. 
+Once I had most queries in place, I've moved on to building out the frontend. Due to the nature of how my `Express.js` prototype returns data, it did not fit as a proper API backend, since it would require a lot more tuning and splitting. Instead I have opted to use `PrismaClient` directly from `Next.js` "pages". This is not how I would approach an application if I were to have more time to properly architect it, however it seemed sufficient to begin forming the look of the site. 
 
 I have chosen not to use any premade themes, but found a few samples to draw inspiration from. I've always wanted to build a minimalistic site with a look similar to [Instagram](https://www.instapaper.com/p/bthdonohue/folder/3576872/engineering-management?r=1), and this seemed to be like a good match. In addition to that, I've found a [minimalistic job board](https://jobs.lever.co/ionicpartners/) that seemed to visually fit what I was looking for.
 
-Most marketplace sites have a very prominent search field. I've built the wiring for it, but ran out of time to properly position the search field itself in the header. The search routes work and do a basic text search. In a real product a specialized engine such as Solr would be a better fit.
+Most marketplace sites have a very prominent search field. I've built the wiring for it, but ran out of time to properly position the search field itself in the header. The search routes work and do a basic text search. In a real product a specialized engine such as `Solr` would be a better fit.
 
 ### Backend Application
 
-In the ideal world, I'd like to have the backend service completely decoupled from the frontend, and have it comsumed via GraphQL and/or REST API. It would create a better separation of concerns as well as would allow to further shield the backend from the outside world. It would also allow to abstract DB lookups together with search engine filtering behind the scenes. 
+In the ideal world, I'd like to have the backend service completely decoupled from the frontend, and have it comsumed via `GraphQL` and/or `REST API`. It would create a better separation of concerns as well as would allow to further shield the backend from the outside world. It would also allow to abstract DB lookups together with search engine filtering behind the scenes. 
 
 For a true headless application we'd also need a proper caching layer in front of it, such as Varnish.
 
 ### User Authentication
 
-I've limited authentication to a basic login with only a username in order to enable logged in/logged out states for some of the operations. Obviously, a real application would require a more robust ACL system.
+I've limited authentication to a basic login with only a username in order to enable logged in/logged out states for some of the operations. Obviously, a real application would require a more robust `ACL` system.
 
 ### Missing Screws
 
