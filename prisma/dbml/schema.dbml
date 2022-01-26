@@ -1,0 +1,97 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  email String [unique, not null]
+  name String [not null]
+  username String [unique, not null]
+  isAdmin Boolean [not null, default: false]
+  isBanned Boolean [not null, default: false]
+  poster Poster
+  worker Worker
+  reviews Review [not null]
+}
+
+Table Poster {
+  id String [pk]
+  userId String [unique, not null]
+  user User [not null]
+  auctions Auction [not null]
+}
+
+Table Worker {
+  id String [pk]
+  userId String [unique, not null]
+  user User [not null]
+  bids Bid [not null]
+}
+
+Table Review {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  rating Int [not null]
+  review String
+  reviewerId String [not null]
+  reviewer User [not null]
+}
+
+Table Auction {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  endsAt DateTime [not null]
+  status AuctionStatus [not null, default: 'LIVE']
+  title String [not null]
+  description String [not null]
+  requirements String [not null]
+  maxPrice Decimal [not null]
+  instantPrice Decimal
+  posterId String [not null]
+  poster Poster [not null]
+  categoryId String [not null]
+  category Category [not null]
+  bids Bid [not null]
+}
+
+Table Category {
+  id String [pk]
+  name String [not null]
+  slug String [unique, not null]
+  auctions Auction [not null]
+}
+
+Table Bid {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  amount Decimal [not null]
+  auctionId String [not null]
+  auction Auction [not null]
+  workerId String [not null]
+  worker Worker [not null]
+}
+
+Enum AuctionStatus {
+  DRAFT
+  LIVE
+  ENDED
+  SUSPENDED
+}
+
+Ref: Poster.userId - User.id
+
+Ref: Worker.userId - User.id
+
+Ref: Review.reviewerId > User.id
+
+Ref: Auction.posterId > Poster.id
+
+Ref: Auction.categoryId > Category.id
+
+Ref: Bid.auctionId > Auction.id [delete: Cascade]
+
+Ref: Bid.workerId > Worker.id

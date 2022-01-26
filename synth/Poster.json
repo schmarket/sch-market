@@ -1,0 +1,13 @@
+{
+    "type": "array",
+    "length": 300,
+    "content": {
+        "type": "object",
+        "id": {
+            "type": "string",
+            "unique": true,
+            "uuid": {}
+        },
+        "userId": "@User.content.id"
+    }
+}

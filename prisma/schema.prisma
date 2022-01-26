@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/model"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  // TODO: use MySQL BINARY format
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+  name      String
+  username  String   @unique
+  // role       Role      @default(USER)
+  isAdmin   Boolean  @default(false)
+  isBanned  Boolean  @default(false)
+
+  poster   Poster?
+  worker   Worker?
+  reviews   Review[]
+}
+
+// enum Role {
+//   USER
+//   ADMIN
+// }
+
+model Poster {
+  id String @id @default(uuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  auctions Auction[]
+}
+
+model Worker {
+  id String @id @default(uuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  bids Bid[]
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rating    Int
+  review    String?  @db.Text
+
+  reviewerId String
+  reviewer   User   @relation(fields: [reviewerId], references: [id])
+}
+
+model Auction {
+  id           String        @id @default(uuid())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  endsAt       DateTime      @default(dbgenerated("(NOW() + INTERVAL 7 DAY)"))
+  status       AuctionStatus @default(LIVE)
+  // hasEnded   Boolean   @default(false)
+  title        String
+  description  String        @db.Text
+  requirements String        @db.Text
+  maxPrice     Decimal       @db.Decimal(13, 2)
+  instantPrice Decimal?      @db.Decimal(13, 2)
+
+  posterId String
+  poster   Poster @relation(fields: [posterId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  bids Bid[]
+}
+
+enum AuctionStatus {
+  DRAFT
+  LIVE
+  ENDED
+  SUSPENDED
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+  slug String @unique
+
+  auctions Auction[]
+}
+
+model Bid {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  amount    Decimal  @db.Decimal(13, 2)
+
+  auctionId String
+  auction   Auction @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+
+  workerId String
+  worker   Worker @relation(fields: [workerId], references: [id])
+}

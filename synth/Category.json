@@ -1,0 +1,19 @@
+{
+    "type": "array",
+    "length": 10,
+    "content": {
+        "type": "object",
+        "id": {
+            "type": "string",
+            "unique": true,
+            "uuid": {}
+        },
+        "name": {
+            "type": "string",
+            "unique": true,
+            "faker": {
+                "generator": "industry"
+            }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+version: '3'
+services:
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - .env
+  #   working_dir: /app
+  #   ports:
+  #     - '1337:1337'
+  #   volumes: 
+  #     - ./:/app
+  #     - node_modules:/app/node_modules
+  #   secrets:
+  #     - host_ssh_key
+  #   environment:
+  #     DATABASE_CLIENT: mysql
+  #     DATABASE_HOST: mysql
+  #     DATABASE_PORT: 3306
+  #     DATABASE_NAME: prisma
+  #     DATABASE_USERNAME: prisma
+  #     DATABASE_PASSWORD: prisma
+  #     DATABASE_SSL: 'false'
+  #   depends_on:
+  #     - mysql
+
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: prisma
+      MYSQL_USER: prisma
+      MYSQL_PASSWORD: prisma
+      MYSQL_ROOT_PASSWORD: prisma_root
+    ports:
+      - '3306:3306'
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+# secrets:
+#   host_ssh_key:
+#     file: ${SSH_PUBKEY}
+
+# volumes:
+#   node_modules:
