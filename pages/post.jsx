@@ -61,7 +61,7 @@ export default function Post({ categories }) {
                         </label>
 
                         <label  className="block mb-6">
-                            <span  className="text-gray-700">Max Price</span>
+                            <span  className="text-gray-700">Category</span>
                             <select name="categoryId" className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                 <option>Choose Category</option>
                                 {categories.map((category) => (
@@ -71,7 +71,7 @@ export default function Post({ categories }) {
                         </label>
 
                         <label  className="block mb-6">
-                            <span  className="text-gray-700">Max Price</span>
+                            <span  className="text-gray-700">Starting Price</span>
                             <input type="text" name="maxPrice" className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Max Price" required />
                         </label>
 
